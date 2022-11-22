@@ -359,10 +359,11 @@ def main(path):
         is_pdf = False
 
     output = get_data(filename, is_pdf)
+
     print(output)
     print("--- %s seconds ---" % (time.time() - start_time))
 
-    return 0
+    return output
 
 # main('./data/22.jpg')
 
