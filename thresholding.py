@@ -7,7 +7,17 @@ from scipy.ndimage import rotate as Rotate
 from skimage.metrics import structural_similarity
 from get_names import get_names, get_side_lens, order_points
 from pdf2image import convert_from_path
+import urllib.request
 import time
+
+def download_file(download_url, filename, file_type): 
+    response = urllib.request.urlopen(download_url)     
+    filename = f'{filename}.{file_type}'
+    file = open(filename + ".pdf", 'wb') 
+    file.write(response.read()) 
+    file.close()
+
+    return filename
 
 def tesseract_find_rotatation(img):
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -343,7 +353,9 @@ front_names_dict = {
     'date_of_birth': None
 }
 
-def main(path):
+def main(link, filetype):
+    path = download_file(link, './temp_data/temp', filetype)    
+    
     start_time = time.time()
     path_ = path.split('.')
     file_extension = path_[-1]
@@ -357,7 +369,7 @@ def main(path):
     else:
         filename = path
         is_pdf = False
-
+    
     output = get_data(filename, is_pdf)
 
     print(output)
@@ -365,7 +377,9 @@ def main(path):
 
     return output
 
-# main('./data/22.jpg')
+# link = 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fvsememy.ru%2Fmeme%2Fdannye-udostovereniya-lichnosti%2F&psig=AOvVaw3YyAPw7DjKiz5Iqi5qRXhx&ust=1669205410770000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCIDRy-7gwfsCFQAAAAAdAAAAABAJ'
+# filetype = 'jpg'
+# main(link, filetype)
 
 # print(len(res_))
 
