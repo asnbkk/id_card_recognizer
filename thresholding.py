@@ -378,9 +378,8 @@ def main(link, filetype):
 
     return output
 
-# link = 'https://elma365dev.technodom.kz/s3elma365/43af2f57-d92f-4af2-9c89-2224774208c0?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=PZSF73JG72Ksd955JKU1HIA%2F20221123%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20221123T102855Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&response-content-disposition=inline&X-Amz-Signature=eabc4cc3ee6e2659f69d5c3123b852ee38c1fe10432799dbf4efecd9b5f561bf'
-# filetype = 'pdf'
-# main(link, filetype)``
+
+# main(link, filetype)
 
 # print(len(res_))
 

@@ -1,19 +1,17 @@
-from thresholding import main
 from flask import Flask, request
+from thresholding import main
 
-path = './data/22.jpg'
 app = Flask(__name__) 
  
-@app.route("/result", methods = ["POST", "GET"]) 
+@app.route("/result", methods = ["POST"]) 
 def result(): 
-    output  = request.get_json() 
-     
+    output  = request.get_json()
     link = output['resumelink']
     filetype = output['idtype']
 
     if link and filetype:
         res = main(link, filetype)
-        print(res)
+        return res
  
 if __name__ == '__main__': 
-    app.run(debug=True, port=2000)
+    app.run(debug=True, port=8000)
