@@ -1,3 +1,5 @@
+import urllib.request
+import ssl
 import re
 import datetime
 import cv2
@@ -7,16 +9,17 @@ from scipy.ndimage import rotate as Rotate
 from skimage.metrics import structural_similarity
 from get_names import get_names, get_side_lens, order_points
 from pdf2image import convert_from_path
-import urllib.request
+# import urllib.request
 import time
+from urllib import request
 
 def download_file(download_url, filename, file_type): 
-    response = urllib.request.urlopen(download_url)     
     filename = f'{filename}.{file_type}'
-    file = open(filename + ".pdf", 'wb') 
-    file.write(response.read()) 
-    file.close()
-
+    # request.urlretrieve(download_url, filename)
+    with request.urlopen(download_url) as d, open(filename, "wb") as opfile:
+        data = d.read()
+        opfile.write(data)
+    
     return filename
 
 def tesseract_find_rotatation(img):
@@ -86,6 +89,7 @@ def set_back_names(back_names_list):
 # path = './data/30.pdf'
 
 def get_data(filename, is_pdf):
+    print(filename)
     img_ = cv2.imread(filename)
     img, _ = tesseract_find_rotatation(img_)
 
@@ -354,32 +358,29 @@ front_names_dict = {
 }
 
 def main(link, filetype):
+    ssl._create_default_https_context = ssl._create_unverified_context
     path = download_file(link, './temp_data/temp', filetype)    
     
     start_time = time.time()
-    path_ = path.split('.')
-    file_extension = path_[-1]
+    # path_ = path.split('.')
+    # file_extension = path_[-1]
 
-    if file_extension == 'pdf':
+    if filetype == 'pdf':
         pages = convert_from_path(path)
-        filename = path_[0] + 'jpg'
         for page in pages:
-            page.save(filename, 'JPEG')
+            page.save(path, 'JPEG')
         is_pdf = True
     else:
-        filename = path
         is_pdf = False
     
-    output = get_data(filename, is_pdf)
-
-    print(output)
+    output = get_data(path, is_pdf)
     print("--- %s seconds ---" % (time.time() - start_time))
 
     return output
 
-# link = 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fvsememy.ru%2Fmeme%2Fdannye-udostovereniya-lichnosti%2F&psig=AOvVaw3YyAPw7DjKiz5Iqi5qRXhx&ust=1669205410770000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCIDRy-7gwfsCFQAAAAAdAAAAABAJ'
-# filetype = 'jpg'
-# main(link, filetype)
+# link = 'https://elma365dev.technodom.kz/s3elma365/43af2f57-d92f-4af2-9c89-2224774208c0?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=PZSF73JG72Ksd955JKU1HIA%2F20221123%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20221123T102855Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&response-content-disposition=inline&X-Amz-Signature=eabc4cc3ee6e2659f69d5c3123b852ee38c1fe10432799dbf4efecd9b5f561bf'
+# filetype = 'pdf'
+# main(link, filetype)``
 
 # print(len(res_))
 

@@ -12,7 +12,8 @@ def result():
     filetype = output['idtype']
 
     if link and filetype:
-        main(link, filetype)
+        res = main(link, filetype)
+        print(res)
  
 if __name__ == '__main__': 
     app.run(debug=True, port=2000)
