@@ -5,6 +5,7 @@ app = Flask(__name__)
  
 @app.route("/result", methods = ["POST"]) 
 def result(): 
+    res = None
     output  = request.get_json()
     link = output['resumelink']
     filetype = output['idtype']

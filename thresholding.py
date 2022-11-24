@@ -310,14 +310,20 @@ def get_data(filename, is_pdf):
                                     if card_data['side'] == 'front':
                                         if card_data.get('iin') is not None and all(front_names_dict.values()):
                                             raise StopLoop()
+                                        else:
+                                            raise CannotGetData()
                                     if card_data['side'] == 'back':
                                         if card_data.get('card_number') is not None and all(back_names_dict.values()):
                                             raise StopLoop()
+                                        else:
+                                            raise CannotGetData()
                                 else:
                                     if all(front_names_dict.values()) and all(back_names_dict.values()):
                                         raise StopLoop()
         except StopLoop:
             break
+        except CannotGetData:
+            return 'Can not read id'
 
     return card_data
 
@@ -329,6 +335,7 @@ year = today.year % 100
 
 class StopLookingForThings(Exception): pass
 class StopLoop(Exception): pass
+class CannotGetData(Exception): pass
 
 is_solo, is_pdf = None, None
 pattern = '[^а-яА-Я]+' # for russian names
@@ -357,6 +364,10 @@ front_names_dict = {
     'date_of_birth': None
 }
 
+card_data_ = card_data.copy()
+back_names_dict_ = back_names_dict.copy()
+front_names_dict_ = front_names_dict.copy()
+
 def main(link, filetype):
     ssl._create_default_https_context = ssl._create_unverified_context
     path = download_file(link, './temp_data/temp', filetype)    
@@ -376,6 +387,11 @@ def main(link, filetype):
     output = get_data(path, is_pdf)
     print("--- %s seconds ---" % (time.time() - start_time))
 
+    global card_data, front_names_dict, back_names_dict
+    card_data = card_data_
+    front_names_dict = front_names_dict_
+    back_names_dict = back_names_dict_
+    
     return output
 
 
