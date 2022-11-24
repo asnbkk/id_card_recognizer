@@ -14,7 +14,7 @@ import time
 from urllib import request
 
 def download_file(download_url, filename, file_type): 
-    filename = f'{filename}.{file_type}'
+    filename = f'{filename}_{file_type}.{file_type}'
     # request.urlretrieve(download_url, filename)
     with request.urlopen(download_url) as d, open(filename, "wb") as opfile:
         data = d.read()
@@ -38,7 +38,7 @@ def get_bounds_for_names(height, width=0):
     width_bound = width - width_bound_, width +  width_bound_ 
     return (height_bound, width_bound)
 
-def set_front_names(front_names_list):
+def set_front_names(front_names_list, front_names_dict):
     for i in front_names_list:
         height = i[-1][-1]
         l, h = get_bounds_for_names(111)[0]
@@ -56,7 +56,7 @@ def set_front_names(front_names_list):
         
     return front_names_dict
 
-def set_back_names(back_names_list):
+def set_back_names(back_names_list, back_names_dict):
     # print(back_names_list)
     for i in back_names_list:
         height = i[-1][-1]
@@ -88,7 +88,7 @@ def set_back_names(back_names_list):
 
 # path = './data/30.pdf'
 
-def get_data(filename, is_pdf):
+def get_data(filename, is_pdf, card_data, front_names_dict, back_names_dict):
     print(filename)
     img_ = cv2.imread(filename)
     img, _ = tesseract_find_rotatation(img_)
@@ -260,7 +260,7 @@ def get_data(filename, is_pdf):
                                     try:
                                         back_names = get_names(res, 'back_names', is_pdf)
                                         # print(back_names)
-                                        card_data['back_data'] = set_back_names(back_names)
+                                        card_data['back_data'] = set_back_names(back_names, back_names_dict)
                                     except Exception as e:
                                         print(e)
                                         continue
@@ -279,7 +279,7 @@ def get_data(filename, is_pdf):
                                     try:
                                         res_names = get_names(res, 'front_names', is_pdf)
                                         # print(res_names)
-                                        card_data['front_data'] = set_front_names(res_names)
+                                        card_data['front_data'] = set_front_names(res_names, front_names_dict)
                                     except Exception as e:
                                         print(e)
                                         continue
@@ -293,7 +293,7 @@ def get_data(filename, is_pdf):
                                     # cv2.waitKey(0)
                                     try:
                                         res_names = get_names(res, 'front_names', is_pdf)
-                                        card_data['front_data'] = set_front_names(res_names)
+                                        card_data['front_data'] = set_front_names(res_names, front_names_dict)
                                     except Exception as e:
                                         print(e)
                                         continue
@@ -341,56 +341,58 @@ is_solo, is_pdf = None, None
 pattern = '[^а-яА-Я]+' # for russian names
 res_, obj_res = [], []
 
-card_data = {
+
+
+# card_data_ = card_data.copy()
+# back_names_dict_ = back_names_dict.copy()
+# front_names_dict_ = front_names_dict.copy()
+
+def main(link, filetype):
+    card_data = {
     'side': None,
     'iin': None,
     'card_number': None,
     'back_data': {},
     'front_data': {}
-}
+    }
 
-back_names_dict = {
-    'place_of_born': None,
-    'nation': None,
-    'organ': None,
-    's_date': None,
-    'e_date': None
-}
+    back_names_dict = {
+        'place_of_born': None,
+        'nation': None,
+        'organ': None,
+        's_date': None,
+        'e_date': None
+    }
 
-front_names_dict = {
-    'surname': None,
-    'name': None,
-    'fathername': None,
-    'date_of_birth': None
-}
-
-card_data_ = card_data.copy()
-back_names_dict_ = back_names_dict.copy()
-front_names_dict_ = front_names_dict.copy()
-
-def main(link, filetype):
+    front_names_dict = {
+        'surname': None,
+        'name': None,
+        'fathername': None,
+        'date_of_birth': None
+    }
     ssl._create_default_https_context = ssl._create_unverified_context
     path = download_file(link, './temp_data/temp', filetype)    
     
     start_time = time.time()
     # path_ = path.split('.')
     # file_extension = path_[-1]
+    print(filetype, link)
 
     if filetype == 'pdf':
         pages = convert_from_path(path)
         for page in pages:
             page.save(path, 'JPEG')
         is_pdf = True
-    else:
+    elif filetype == 'jpg':
         is_pdf = False
     
-    output = get_data(path, is_pdf)
+    output = get_data(path, is_pdf, card_data, front_names_dict, back_names_dict)
     print("--- %s seconds ---" % (time.time() - start_time))
 
-    global card_data, front_names_dict, back_names_dict
-    card_data = card_data_
-    front_names_dict = front_names_dict_
-    back_names_dict = back_names_dict_
+    # global card_data, front_names_dict, back_names_dict
+    # card_data = card_data_
+    # front_names_dict = front_names_dict_
+    # back_names_dict = back_names_dict_
     
     return output
 
