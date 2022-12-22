@@ -370,9 +370,8 @@ def main(link, filetype):
         'fathername': None,
         'date_of_birth': None
     }
-    ssl._create_default_https_context = ssl._create_unverified_context
+    # ssl._create_default_https_context = ssl._create_unverified_context
     path = download_file(link, './temp_data/temp', filetype)    
-    
     start_time = time.time()
     # path_ = path.split('.')
     # file_extension = path_[-1]
