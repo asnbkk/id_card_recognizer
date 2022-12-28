@@ -191,7 +191,7 @@ def get_data(filename, is_pdf, card_data, front_names_dict, back_names_dict):
                                 # getting iin
                                 top = int(height - height / 7)
                                 bottom = height
-                                left = 0
+                                left = 0 if is_solo else int(width - width / 1.1)
                                 right = int(width / 2)
                                 res = resized[top:bottom, left:right]
 
