@@ -375,7 +375,7 @@ def main(link, filetype):
     start_time = time.time()
     # path_ = path.split('.')
     # file_extension = path_[-1]
-    print(filetype, link)
+    # print(filetype, link)
 
     if filetype == 'pdf':
         pages = convert_from_path(path)
