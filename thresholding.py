@@ -89,7 +89,7 @@ def set_back_names(back_names_list, back_names_dict):
 # path = './data/30.pdf'
 
 def get_data(filename, is_pdf, card_data, front_names_dict, back_names_dict):
-    print(filename)
+    # print(filename)
     img_ = cv2.imread(filename)
     img, _ = tesseract_find_rotatation(img_)
 
@@ -137,7 +137,7 @@ def get_data(filename, is_pdf, card_data, front_names_dict, back_names_dict):
                             (tl, tr, br, bl) = pts
                             maxWidth, maxHeight = get_side_lens(*pts)
 
-                            # con = cv2.rectangle(img_orig, pts[0], pts[2], (0, 255, 255), 3)  
+                            con = cv2.rectangle(img_orig, pts[0], pts[2], (0, 255, 255), 3)  
                             # cv2.imshow('test', con) 
                             # cv2.waitKey(0)
                             
@@ -330,17 +330,6 @@ def get_data(filename, is_pdf, card_data, front_names_dict, back_names_dict):
 
 # print(card_data)
 
-today = datetime.date.today()
-year = today.year % 100
-
-class StopLookingForThings(Exception): pass
-class StopLoop(Exception): pass
-class CannotGetData(Exception): pass
-
-is_solo, is_pdf = None, None
-pattern = '[^а-яА-Я]+' # for russian names
-res_, obj_res = [], []
-
 
 
 # card_data_ = card_data.copy()
@@ -348,6 +337,20 @@ res_, obj_res = [], []
 # front_names_dict_ = front_names_dict.copy()
 
 def main(link, filetype):
+    global is_solo, pattern, res_, obj_res, year
+    global StopLookingForThings, StopLoop, CannotGetData
+    
+    today = datetime.date.today()
+    year = today.year % 100
+
+    class StopLookingForThings(Exception): pass
+    class StopLoop(Exception): pass
+    class CannotGetData(Exception): pass
+
+    is_solo, is_pdf = None, None
+    pattern = '[^а-яА-Я]+' # for russian names
+    res_, obj_res = [], []
+
     card_data = {
     'side': None,
     'iin': None,
