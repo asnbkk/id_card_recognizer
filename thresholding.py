@@ -154,7 +154,7 @@ def get_data(filename, is_pdf, card_data, front_names_dict, back_names_dict):
                                 M, 
                                 (maxWidth, maxHeight), 
                                 flags=cv2.INTER_LINEAR)
-
+                            
                             ratio = maxHeight / maxWidth
                             # print(ratio)
                             final = img_orig[
@@ -375,6 +375,7 @@ def main(link, filetype):
     }
     # ssl._create_default_https_context = ssl._create_unverified_context
     path = download_file(link, './temp_data/temp', filetype)    
+    # path = './temp_data/temp_pdf_.pdf'
     start_time = time.time()
     # path_ = path.split('.')
     # file_extension = path_[-1]
@@ -390,21 +391,7 @@ def main(link, filetype):
     
     output = get_data(path, is_pdf, card_data, front_names_dict, back_names_dict)
     print("--- %s seconds ---" % (time.time() - start_time))
-
-    # global card_data, front_names_dict, back_names_dict
-    # card_data = card_data_
-    # front_names_dict = front_names_dict_
-    # back_names_dict = back_names_dict_
     
     return output
 
-
-# main(link, filetype)
-
-# print(len(res_))
-
-# for r in res_:
-#     cv2.namedWindow('img_file_name', cv2.WINDOW_NORMAL) # Creates a window
-#     os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "python" to true' ''')
-#     cv2.imshow('test', r['img'])
-#     cv2.waitKey(0)
+# main(None, 'pdf')
