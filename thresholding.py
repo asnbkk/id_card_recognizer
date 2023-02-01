@@ -199,6 +199,7 @@ def get_data(filename, is_pdf, card_data, front_names_dict, back_names_dict):
                                 # cv2.waitKey(0)
                                 
                                 text = pytesseract.image_to_string(res, config=ONLY_DIGITS_CONF)
+                                # print(text)
                                 for t in text.split('\n'):
                                     if len(t) == 12:  
                                         # print(t)
@@ -242,7 +243,7 @@ def get_data(filename, is_pdf, card_data, front_names_dict, back_names_dict):
                                 # cv2.imshow('test_maunal_model.jpg', res)
                                 # cv2.waitKey(0)
                                 text = pytesseract.image_to_string(res, config=ONLY_DIGITS_CONF)
-                                
+                                # print(text)
                                 for t in text.split('\n'):
                                     if len(t) == 9:
                                         # print(t)
@@ -391,7 +392,7 @@ def main(link, filetype):
     
     output = get_data(path, is_pdf, card_data, front_names_dict, back_names_dict)
     print("--- %s seconds ---" % (time.time() - start_time))
-    
+    print(output)
     return output
 
-# main(None, 'pdf')
+# main('https://elma365dev.technodom.kz/s3elma365/a6e9da7c-bcad-4396-86c1-3dd3fb1de5b7?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=PZSF73JG72Ksd955JKU1HIA%2F20230201%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230201T085021Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&response-content-disposition=inline&X-Amz-Signature=71f9fbb80c39affb2cfe1536fb07e1823ad5889912e6f700d43836a23c5504fd', 'pdf')

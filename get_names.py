@@ -34,7 +34,7 @@ def get_tess_conf(img, conf_level):
                                        lang='kaz+rus',
                                        nice=-1,
                                        output_type=pytesseract.Output.DICT,
-                                       config='--psm 1')
+                                       config='--psm 1 tessedit_char_whitelist .123456789')
     conf_list_ = [i for i in output['conf'] if i != -1]
     conf = sum(conf_list_) / len(conf_list_)
 
@@ -100,10 +100,10 @@ def get_names(img, side='front_names', is_pdf=False):
     # cv2.waitKey(0)
     
     for pts in pts_list:
-        padding_top = padding_ver + 3 if is_pdf else padding_ver + 7
+        padding_top = padding_ver + 5 if is_pdf else padding_ver + 7
         name = img[
             pts[0][-1]-padding_top:pts[-1][-1]+padding_ver + 5, 
-            pts[0][0]:pts[2][0]]
+            pts[0][0]-5:pts[2][0]-5]
         try:
             # norm_img = np.zeros((img.shape[0], img.shape[1]))
             # img = cv2.normalize(name, norm_img, 0, 255, cv2.NORM_MINMAX)
@@ -112,7 +112,7 @@ def get_names(img, side='front_names', is_pdf=False):
     
             # img = cv2.fastNlMeansDenoisingColored(img, None, 10, 10, 7, 15)
             res = cv2.cvtColor(name, cv2.COLOR_BGR2GRAY)
-            # res = cv2.threshold(res, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+            res = cv2.threshold(res, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
             scale_percent = 150 # percent of original size
             width = int(res.shape[1] * scale_percent / 100)
             height = int(res.shape[0] * scale_percent / 100)
@@ -128,7 +128,6 @@ def get_names(img, side='front_names', is_pdf=False):
         except Exception as e:
             print(e)
             continue
-        
     return res_list
 
 # img = cv2.imread('./data/cropped2.jpg')
