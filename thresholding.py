@@ -384,8 +384,7 @@ def main(link, filetype):
 
     if filetype == 'pdf':
         pages = convert_from_path(path)
-        for page in pages:
-            page.save(path, 'JPEG')
+        pages[0].save(path, 'JPEG')
         is_pdf = True
     elif filetype == 'jpg':
         is_pdf = False
