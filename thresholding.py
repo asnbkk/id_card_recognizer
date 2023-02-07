@@ -384,12 +384,13 @@ def main(link, filetype):
 
     if filetype == 'pdf':
         pages = convert_from_path(path)
-        pages[0].save(path, 'JPEG')
+        new_path = path[:-3]+'jpg'
+        pages[0].save(new_path, 'JPEG')
         is_pdf = True
     elif filetype == 'jpg':
         is_pdf = False
     
-    output = get_data(path, is_pdf, card_data, front_names_dict, back_names_dict)
+    output = get_data(new_path, is_pdf, card_data, front_names_dict, back_names_dict)
     print("--- %s seconds ---" % (time.time() - start_time))
     print(output)
     return output
