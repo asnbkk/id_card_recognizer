@@ -385,7 +385,13 @@ def main(link, filetype):
     if filetype == 'pdf':
         pages = convert_from_path(path)
         new_path = path[:-3]+'jpg'
-        pages[0].save(new_path, 'JPEG')
+        # pages[0].save(new_path, 'JPEG')
+        for page in pages: 
+            extrema = page.convert("L").getextrema() 
+            if extrema[0] == extrema[1]: 
+                pass 
+            else: 
+                page.save(new_path, 'JPEG')
         is_pdf = True
     elif filetype == 'jpg':
         is_pdf = False
