@@ -9,6 +9,7 @@ from scipy.ndimage import rotate as Rotate
 from skimage.metrics import structural_similarity
 from get_names import get_names, get_side_lens, order_points
 from pdf2image import convert_from_path
+import PyPDF2 
 # import urllib.request
 import time
 from urllib import request
@@ -331,11 +332,40 @@ def get_data(filename, is_pdf, card_data, front_names_dict, back_names_dict):
 
 # print(card_data)
 
-
-
 # card_data_ = card_data.copy()
 # back_names_dict_ = back_names_dict.copy()
 # front_names_dict_ = front_names_dict.copy()
+
+def simple_udo_read(path, card_data, front_names_dict, back_names_dict):   
+    pdfFileObj = open(path, 'rb') 
+    pdfReader = PyPDF2.PdfFileReader(pdfFileObj) 
+    num_pages = pdfReader.numPages 
+    full_cv = [] 
+ 
+    for n in range(num_pages): 
+        pageObj = pdfReader.getPage(n) 
+        full_cv+=pageObj.extractText().split('\n') 
+    full_cv = [f.strip() for f in full_cv] 
+     
+    if len(full_cv[2].split('.'))!=1: 
+        full_cv = full_cv[:2] + [''] + full_cv[2:] 
+     
+    card_data['side'] = 'front' 
+    card_data['iin'] = full_cv[4] 
+    card_data['card_number'] = full_cv[5] 
+    back_names_dict['place_of_born'] = full_cv[6] 
+    back_names_dict['nation'] = full_cv[7] 
+    back_names_dict['organ'] = full_cv[8] 
+    back_names_dict['s_date'] = full_cv[9].split('-')[0].strip() 
+    back_names_dict['e_date'] = full_cv[9].split('-')[1].strip() 
+    front_names_dict['surname'] = full_cv[0] 
+    front_names_dict['name'] = full_cv[1] 
+    front_names_dict['fathername'] = full_cv[2] 
+    front_names_dict['date_of_birth'] = full_cv[3] 
+    card_data['back_data'] = back_names_dict 
+    card_data['front_data'] = front_names_dict 
+     
+    return card_data
 
 def main(link, filetype):
     global is_solo, pattern, res_, obj_res, year
@@ -396,7 +426,11 @@ def main(link, filetype):
     elif filetype == 'jpg':
         is_pdf = False
     
-    output = get_data(new_path, is_pdf, card_data, front_names_dict, back_names_dict)
+    # output = get_data(new_path, is_pdf, card_data, front_names_dict, back_names_dict)
+    try: 
+        output = simple_udo_read(path, card_data, front_names_dict, back_names_dict) 
+    except: 
+        output = get_data(new_path, is_pdf, card_data, front_names_dict, back_names_dict)
     print("--- %s seconds ---" % (time.time() - start_time))
     print(output)
     return output
