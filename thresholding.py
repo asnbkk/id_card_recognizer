@@ -424,6 +424,7 @@ def main(link, filetype):
                 page.save(new_path, 'JPEG')
         is_pdf = True
     elif filetype == 'jpg':
+        new_path = path
         is_pdf = False
     
     # output = get_data(new_path, is_pdf, card_data, front_names_dict, back_names_dict)
